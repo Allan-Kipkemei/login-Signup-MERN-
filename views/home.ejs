@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Home</title>
+</head>
+
+<body>
+  <h1>Welcome to the Home Page</h1>
+  <% if (user) { %>
+    <p>Logged in as: <%= user.username %>
+    </p>
+    <a href="/logout">Logout</a>
+    <% } else { %>
+      <p>Click <a href="/signup">here</a> to sign up or <a href="/login">here</a> to log in.</p>
+      <% } %>
+</body>
+
+</html>
