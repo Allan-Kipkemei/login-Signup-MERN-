@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const app = express();
 const session = require('express-session');
+require('dotenv').config();
 
 // ...
 
@@ -20,7 +21,7 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: false }));
 
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://allankiplagatkipkemei:PROtETlnUiq1BCsg@cluster0.dmms5d2.mongodb.net/', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         console.log('Connected to MongoDB');
     })
