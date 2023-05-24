@@ -10,7 +10,7 @@ require('dotenv').config();
 app.use(session({
     secret: 'your-secret-key', // Replace with your own secret key
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: true
 }));
 
 
@@ -18,30 +18,38 @@ app.use(session({
 app.set('view engine', 'ejs');
 
 // Middleware
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({extended: false}));
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
-        console.log('Connected to MongoDB');
-    })
-    .catch((err) => {
-        console.error('Error connecting to MongoDB:', err);
-    });
+mongoose.connect(process.env.MONGODB_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log('Connected to MongoDB');
+}).catch((err) => {
+    console.error('Error connecting to MongoDB:', err);
+});
 
 // Create a user schema
 const userSchema = new mongoose.Schema({
-    username: String,
-    password: String,
+    username: {
+        type: String,
+        required: true
+    },
+    password: {
+        type: String,
+        required: true
+    }
 });
 
 const User = mongoose.model('User', userSchema);
 
 // Routes
-app.get('/', (req, res) => {
-    // Pass the user object to the template if it exists in the session
-    const user = req.session.userId ? { username: 'JohnDoe' } : null; // Replace with your own logic to fetch the user from the database
-    res.render('home', { user: user });
+app.get('/', (req, res) => { // Pass the user object to the template if it exists in the session
+    const user = req.session.userId ? {
+        username: 'JohnDoe'
+    } : null; // Replace with your own logic to fetch the user from the database
+    res.render('home', {user: user});
 });
 
 
@@ -50,14 +58,11 @@ app.get('/signup', (req, res) => {
 });
 
 app.post('/signup', async (req, res) => {
-    const { username, password } = req.body;
+    const {username, password} = req.body;
 
     try {
-        const hashedPassword = await bcrypt.hash(password, 1);
-        const user = new User({
-            username: username,
-            password: hashedPassword,
-        });
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const user = new User({username: username, password: hashedPassword});
         await user.save();
         res.redirect('/login');
     } catch (err) {
@@ -71,14 +76,13 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-    const { username, password } = req.body;
+    const {username, password} = req.body;
 
     try {
-        const user = await User.findOne({ username: username });
+        const user = await User.findOne({username: username});
         if (user) {
             const passwordMatch = await bcrypt.compare(password, user.password);
-            if (passwordMatch) {
-                // Assuming you are using sessions, set the user ID in the session
+            if (passwordMatch) { // Assuming you are using sessions, set the user ID in the session
                 req.session.userId = user._id;
                 res.send('Logged in successfully!');
             } else {
@@ -98,8 +102,7 @@ app.post('/login', async (req, res) => {
 // Routes
 // ...
 
-app.get('/logout', (req, res) => {
-    // Assuming you are using sessions, you can clear the session and redirect to the home page
+app.get('/logout', (req, res) => { // Assuming you are using sessions, you can clear the session and redirect to the home page
     req.session.destroy((err) => {
         if (err) {
             console.error('Error logging out:', err);
@@ -114,4 +117,3 @@ app.get('/logout', (req, res) => {
 app.listen(3000, () => {
     console.log('Server started on http://localhost:3000');
 });
- 
