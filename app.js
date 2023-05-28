@@ -2,11 +2,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const app = express();
+const cors =require('cors')
 const session = require('express-session');
 require('dotenv').config();
 
 // ...
 
+app.use(cors())
 app.use(session({
     secret: 'your-secret-key', // Replace with your own secret key
     resave: false,
