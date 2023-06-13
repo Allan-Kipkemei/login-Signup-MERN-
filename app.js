@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+
+//stat instance of express
 const app = express();
 const cors =require('cors')
 const session = require('express-session');
